@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class LaimMovement : MonoBehaviour
@@ -20,6 +18,21 @@ public class LaimMovement : MonoBehaviour
 
     void Update()
     {
+        // ✅ If movement is locked, force input to zero and update animator as idle
+        if (!GameState.CanPlayerMove)
+        {
+            moveInput = Vector2.zero;
+
+            if (animator != null)
+            {
+                animator.SetFloat("X", lastMoveDir.x);
+                animator.SetFloat("Y", lastMoveDir.y);
+                animator.SetFloat("Speed", 0f);
+                animator.SetBool("IsMoving", false);
+            }
+            return;
+        }
+
         // Get input
         moveInput.x = Input.GetAxisRaw("Horizontal");
         moveInput.y = Input.GetAxisRaw("Vertical");
@@ -47,7 +60,9 @@ public class LaimMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Apply movement
+        // ✅ Don’t move if locked
+        if (!GameState.CanPlayerMove) return;
+
         rb.MovePosition(rb.position + moveInput * moveSpeed * Time.fixedDeltaTime);
     }
 }
