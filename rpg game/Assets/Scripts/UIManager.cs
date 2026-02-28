@@ -7,6 +7,9 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
 
+    [Header("Save UI")]
+    [SerializeField] private GameObject savePanel;
+
     [Header("Sleep Dialog")]
     [SerializeField] private GameObject sleepDialogUI;
     [SerializeField] private Button yesButton;
@@ -37,6 +40,7 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
+        savePanel.SetActive(false);
         sleepDialogUI.SetActive(false);
 
         yesButton.onClick.RemoveAllListeners();
@@ -105,4 +109,34 @@ public class UIManager : MonoBehaviour
         sleepSequenceRunning = false;
         GameState.CanPlayerMove = true;
     }
+
+    public void ShowSavePanel()
+{
+    GameState.CanPlayerMove = false;
+    savePanel.SetActive(true);
+}
+
+public void HideSavePanel()
+{
+    savePanel.SetActive(false);
+    GameState.CanPlayerMove = true;
+}
+
+public void OnSaveYes()
+{
+    SaveGame();
+    HideSavePanel();
+}
+
+public void OnSaveNo()
+{
+    HideSavePanel();
+}
+
+private void SaveGame()
+{
+    PlayerPrefs.SetInt("Saved", 1);
+    PlayerPrefs.Save();
+    Debug.Log("Game Saved!");
+}
 }
