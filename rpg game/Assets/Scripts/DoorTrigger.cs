@@ -5,8 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class DoorTrigger : MonoBehaviour
 {
+    [Header("Scene Settings")]
     public string sceneToLoad;
     public string spawnPointToUse;
+
+    [Header("Transition Settings")]
+    [SerializeField] private bool useFade = true;   // 👈 Toggle in Inspector
 
     private bool canTrigger = false;
 
@@ -27,7 +31,15 @@ public class DoorTrigger : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             DoorManager.spawnPointName = spawnPointToUse;
-            SceneManager.LoadScene(sceneToLoad);
+
+            if (useFade)
+            {
+                UIManager.Instance.TransitionToScene(sceneToLoad);
+            }
+            else
+            {
+                SceneManager.LoadScene(sceneToLoad);
+            }
         }
     }
 }

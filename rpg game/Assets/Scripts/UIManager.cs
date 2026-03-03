@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -139,4 +140,30 @@ private void SaveGame()
     PlayerPrefs.Save();
     Debug.Log("Game Saved!");
 }
+
+    // --------------------
+    // Scene Transition
+    // --------------------
+
+    public void TransitionToScene(string sceneName)
+    {
+        StartCoroutine(SceneTransitionRoutine(sceneName));
+    }
+
+    private IEnumerator SceneTransitionRoutine(string sceneName)
+    {
+        GameState.CanPlayerMove = false;
+
+        // Fade to black
+        yield return fader.FadeTo(1f, fadeDuration);
+
+        // Load scene
+        yield return SceneManager.LoadSceneAsync(sceneName);
+
+        // Fade back in
+        yield return fader.FadeTo(0f, fadeDuration);
+
+        GameState.CanPlayerMove = true;
+    }
+
 }
